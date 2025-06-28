@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FiArrowLeft, FiEdit, FiTrash2, FiUser, FiClock, FiTag, FiAlertTriangle, FiCheckCircle, FiX, FiDownload, FiEye } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit, FiTrash2, FiUser, FiClock, FiTag, FiCheckCircle, FiX, FiDownload, FiEye } from 'react-icons/fi';
 import './BugDetail.css';
 import { bugAPI } from '../services/api';
 
@@ -23,7 +23,6 @@ const BugDetail = ({ bugs, onUpdateBug, onDeleteBug, currentUser }) => {
   const [editForm, setEditForm] = useState({});
   const [dynamicRequests, setDynamicRequests] = useState([]);
   const [dynamicComments, setDynamicComments] = useState([]);
-  const [showFileViewer, setShowFileViewer] = useState(false);
   const [approveLoadingIdx, setApproveLoadingIdx] = useState(null);
   const [toast, setToast] = useState(null);
   const [commentLoading, setCommentLoading] = useState(false);
@@ -190,7 +189,6 @@ const BugDetail = ({ bugs, onUpdateBug, onDeleteBug, currentUser }) => {
       (req.author && currentUser?.name && req.author.toLowerCase() === currentUser.name.toLowerCase()) ||
       (req.author && currentUser?.email && req.author.toLowerCase() === currentUser.email.toLowerCase())
   );
-  const canRequestWork = !isReporter && bug.status === 'Open' && !userRequest;
 
   // Handler to request work
   const handleRequestWork = async () => {

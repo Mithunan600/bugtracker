@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { FiPlus, FiSearch, FiFilter, FiEdit, FiTrash2, FiEye, FiGitBranch, FiCheckCircle, FiClock, FiUser } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiTrash2, FiEye, FiGitBranch, FiCheckCircle, FiClock, FiUser } from 'react-icons/fi';
 import './BugList.css';
 import { bugAPI } from '../services/api';
 
@@ -74,7 +74,7 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
     });
 
     return filtered;
-  }, [bugs, searchTerm, statusFilter, severityFilter, priorityFilter, sortBy, sortOrder, assignedToMeFilter, currentUser, refreshFlag]);
+  }, [bugs, searchTerm, statusFilter, severityFilter, priorityFilter, sortBy, sortOrder, assignedToMeFilter, currentUser]);
 
   if (loading) {
     return (
@@ -199,11 +199,6 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
       default: return 'btn-primary';
     }
   };
-
-  // Helper to check if current user is reporter
-  const isReporter = (bug) =>
-    (bug.reporter && currentUser?.name && bug.reporter.toLowerCase() === currentUser.name.toLowerCase()) ||
-    (bug.reporter && currentUser?.email && bug.reporter.toLowerCase() === currentUser.email.toLowerCase());
 
   // Helper to check if current user already requested
   const getUserRequest = (bug) =>
@@ -405,9 +400,6 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
                 bug.assignedTo.toLowerCase() === (currentUser?.name?.toLowerCase() || '') ||
                 bug.assignedTo.toLowerCase() === (currentUser?.email?.toLowerCase() || '')
               );
-              const isAssignedToOther = bug.assignedTo && !isAssignedToCurrentUser;
-              const isReporter = (bug.reporter && currentUser?.name && bug.reporter.toLowerCase() === currentUser.name.toLowerCase()) ||
-                                 (bug.reporter && currentUser?.email && bug.reporter.toLowerCase() === currentUser.email.toLowerCase());
               return (
                 <div key={bug.id} className="bug-card">
                   <div className="bug-header">
@@ -524,7 +516,6 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
                         bug.assignedTo.toLowerCase() === (currentUser?.name?.toLowerCase() || '') ||
                         bug.assignedTo.toLowerCase() === (currentUser?.email?.toLowerCase() || '')
                       );
-                      const isAssignedToOther = bug.assignedTo && !isAssignedToCurrentUser;
                       const isReporter = (bug.reporter && currentUser?.name && bug.reporter.toLowerCase() === currentUser.name.toLowerCase()) ||
                                          (bug.reporter && currentUser?.email && bug.reporter.toLowerCase() === currentUser.email.toLowerCase());
                       if (isReporter) {
@@ -532,7 +523,7 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
                       }
                       if (isAssignedToCurrentUser) {
                         return <span className="assigned-badge">Assigned to you</span>;
-                      } else if (isAssignedToOther) {
+                      } else if (bug.assignedTo && !isAssignedToCurrentUser) {
                         return <span className="assigned-badge"><span className="assigned-tag">Already assigned</span></span>;
                       } else if (userRequest) {
                         return <span className={`request-status-badge ${userRequest.status}`}>{userRequest.status.charAt(0).toUpperCase() + userRequest.status.slice(1)}</span>;

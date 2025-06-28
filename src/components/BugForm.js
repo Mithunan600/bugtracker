@@ -19,7 +19,6 @@ const BugForm = ({ onSubmit, currentUser }) => {
   });
   const [attachments, setAttachments] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
 
   // Update reporter when currentUser changes
   useEffect(() => {
@@ -66,7 +65,6 @@ const BugForm = ({ onSubmit, currentUser }) => {
     if (!formData.version.trim()) errors.version = 'Version is required';
     if (!formData.commitHash.trim()) errors.commitHash = 'Commit Hash is required';
     if (!formData.branch.trim()) errors.branch = 'Branch is required';
-    setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
@@ -91,14 +89,6 @@ const BugForm = ({ onSubmit, currentUser }) => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
