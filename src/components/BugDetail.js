@@ -678,50 +678,6 @@ const BugDetail = ({ bugs, onUpdateBug, onDeleteBug, currentUser }) => {
         </div>
       )}
 
-      {/* File Viewer Modal */}
-      {showFileViewer && (
-        <div className="modal-overlay">
-          <div className="modal file-viewer-modal">
-            <div className="modal-header">
-              <h3>File Viewer</h3>
-              <button onClick={() => setShowFileViewer(false)} className="btn btn-icon">
-                <FiX />
-              </button>
-            </div>
-            <div className="modal-content">
-              <div className="file-info">
-                <span className="file-icon">{getFileIcon(selectedFile)}</span>
-                <span className="file-name">{selectedFile}</span>
-              </div>
-              <div className="file-actions">
-                <p>This file cannot be previewed directly in the browser.</p>
-                <div className="action-buttons">
-                  <button 
-                    className="btn btn-primary"
-                    onClick={() => handleOpenFile(selectedFile)}
-                  >
-                    <FiDownload />
-                    Download & Open
-                  </button>
-                  <button 
-                    className="btn btn-secondary"
-                    onClick={() => handleDownloadFile(selectedFile)}
-                  >
-                    <FiDownload />
-                    Download Only
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="modal-actions">
-              <button onClick={() => setShowFileViewer(false)} className="btn btn-secondary">
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Toast notification */}
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
 
