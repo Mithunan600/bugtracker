@@ -34,6 +34,7 @@ public class SecurityConfig {
             .cors().and()
             .csrf().disable()
             .authorizeRequests()
+            .antMatchers("/health").permitAll()
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/bugs/assigned").permitAll()
