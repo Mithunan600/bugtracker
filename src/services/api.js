@@ -1,5 +1,4 @@
-// API configuration for Vercel deployment
-// Railway backend URL
+// API configuration for deployed Railway backend
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://bugtracker-production-3c60.up.railway.app/api';
 
 // Helper function to handle API responses
