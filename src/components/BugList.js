@@ -24,7 +24,6 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
   const [updatingStatus, setUpdatingStatus] = useState(null);
-  const [refreshFlag, setRefreshFlag] = useState(false);
   const [requestingBugId, setRequestingBugId] = useState(null);
   const [toast, setToast] = useState(null);
 
@@ -241,9 +240,8 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
       if (typeof fetchBugs === 'function') {
         fetchBugs();
       } else {
-        setRefreshFlag(f => !f);
+        setToast('Request sent successfully!');
       }
-      setToast('Request sent successfully!');
     } catch (error) {
       setToast('Failed to request work: ' + error.message);
     } finally {
@@ -396,10 +394,6 @@ const BugList = ({ bugs = [], setBugs, onUpdateBug, onDeleteBug, currentUser, lo
           <div className="bugs-grid">
             {filteredAndSortedBugs.map(bug => {
               const userRequest = getUserRequest(bug);
-              const isAssignedToCurrentUser = bug.assignedTo && (
-                bug.assignedTo.toLowerCase() === (currentUser?.name?.toLowerCase() || '') ||
-                bug.assignedTo.toLowerCase() === (currentUser?.email?.toLowerCase() || '')
-              );
               return (
                 <div key={bug.id} className="bug-card">
                   <div className="bug-header">
