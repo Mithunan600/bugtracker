@@ -1,0 +1,234 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Dashboard from './components/Dashboard';
+import BugList from './components/BugList';
+import BugForm from './components/BugForm';
+import BugDetail from './components/BugDetail';
+import Analytics from './components/Analytics';
+import Login from './components/Login';
+import Register from './components/Register';
+import Landing from './components/Landing';
+import ProtectedRoute from './components/ProtectedRoute';
+import './App.css';
+
+// Wrapper component to conditionally render container
+const PageWrapper = ({ children, isAuthenticated }) => {
+  const location = useLocation();
+  const isLandingPage = location.pathname === '/';
+  
+  if (isLandingPage) {
+    return children;
+  }
+  
+  return (
+    <div className="container">
+      {children}
+    </div>
+  );
+};
+
+function App() {
+  const [bugs, setBugs] = useState([
+    {
+      id: 1,
+      title: "Login page not loading on mobile devices",
+      description: "Users are unable to access the login page on mobile devices. The page shows a blank screen.",
+      severity: "High",
+      priority: "Urgent",
+      status: "Open",
+      assignedTo: "John Doe",
+      reporter: "Sarah Smith",
+      createdAt: "2024-01-15",
+      updatedAt: "2024-01-15",
+      attachments: ["screenshot1.png", "error_log.txt"],
+      reproductionSteps: "1. Open mobile browser\n2. Navigate to login page\n3. Page shows blank screen",
+      version: "v2.1.0",
+      commitHash: "abc123def",
+      branch: "main"
+    },
+    {
+      id: 2,
+      title: "Database connection timeout",
+      description: "Application frequently loses connection to the database, causing data loss.",
+      severity: "Critical",
+      priority: "Urgent",
+      status: "In Progress",
+      assignedTo: "Mike Johnson",
+      reporter: "Admin",
+      createdAt: "2024-01-14",
+      updatedAt: "2024-01-16",
+      attachments: ["db_logs.sql"],
+      reproductionSteps: "1. Run heavy queries\n2. Wait for 30 seconds\n3. Connection drops",
+      version: "v2.0.5",
+      commitHash: "def456ghi",
+      branch: "develop"
+    },
+    {
+      id: 3,
+      title: "UI alignment issues in dashboard",
+      description: "Dashboard elements are misaligned on different screen sizes.",
+      severity: "Medium",
+      priority: "Normal",
+      status: "Resolved",
+      assignedTo: "Lisa Chen",
+      reporter: "User Feedback",
+      createdAt: "2024-01-10",
+      updatedAt: "2024-01-12",
+      attachments: ["dashboard_screenshot.png"],
+      reproductionSteps: "1. Open dashboard\n2. Resize browser window\n3. Elements overlap",
+      version: "v2.1.0",
+      commitHash: "ghi789jkl",
+      branch: "feature/dashboard-fix"
+    }
+  ]);
+
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState([
+    {
+      id: 1,
+      name: "John Doe",
+      email: "john@example.com",
+      password: "password123",
+      role: "Developer"
+    },
+    {
+      id: 2,
+      name: "Sarah Smith",
+      email: "sarah@example.com",
+      password: "password123",
+      role: "QA Tester"
+    },
+    {
+      id: 3,
+      name: "Mike Johnson",
+      email: "mike@example.com",
+      password: "password123",
+      role: "Team Lead"
+    }
+  ]);
+
+  // Check for existing authentication on app load
+  useEffect(() => {
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleRegister = (userData) => {
+    const newUser = {
+      id: users.length + 1,
+      name: userData.name,
+      email: userData.email,
+      password: userData.password, // In real app, this would be hashed
+      role: userData.role
+    };
+    
+    setUsers([...users, newUser]);
+    console.log('User registered:', newUser);
+  };
+
+  const handleLogin = (credentials) => {
+    const user = users.find(u => 
+      u.email === credentials.email && u.password === credentials.password
+    );
+    
+    if (user) {
+      setCurrentUser(user);
+      setIsAuthenticated(true);
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      return true;
+    }
+    return false;
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('currentUser');
+  };
+
+  const addBug = (newBug) => {
+    const bug = {
+      ...newBug,
+      id: bugs.length + 1,
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+      status: "Open",
+      reporter: currentUser?.name || "Anonymous"
+    };
+    setBugs([...bugs, bug]);
+  };
+
+  const updateBug = (id, updates) => {
+    setBugs(bugs.map(bug => 
+      bug.id === id 
+        ? { ...bug, ...updates, updatedAt: new Date().toISOString().split('T')[0] }
+        : bug
+    ));
+  };
+
+  const deleteBug = (id) => {
+    setBugs(bugs.filter(bug => bug.id !== id));
+  };
+
+  return (
+    <Router>
+      <div className="App">
+        {isAuthenticated && <Navbar currentUser={currentUser} onLogout={handleLogout} />}
+        <main className={`main-content ${!isAuthenticated ? 'auth-main' : ''}`}>
+          <PageWrapper isAuthenticated={isAuthenticated}>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={
+                isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />
+              } />
+              <Route path="/login" element={
+                isAuthenticated ? <Navigate to="/dashboard" replace /> : 
+                <Login onLogin={handleLogin} />
+              } />
+              <Route path="/register" element={
+                isAuthenticated ? <Navigate to="/dashboard" replace /> : 
+                <Register onRegister={handleRegister} />
+              } />
+              
+              {/* Protected routes */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Dashboard bugs={bugs} currentUser={currentUser} />
+                </ProtectedRoute>
+              } />
+              <Route path="/bugs" element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <BugList bugs={bugs} onUpdateBug={updateBug} onDeleteBug={deleteBug} currentUser={currentUser} />
+                </ProtectedRoute>
+              } />
+              <Route path="/bugs/new" element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <BugForm onSubmit={addBug} currentUser={currentUser} />
+                </ProtectedRoute>
+              } />
+              <Route path="/bugs/:id" element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <BugDetail bugs={bugs} onUpdateBug={updateBug} currentUser={currentUser} />
+                </ProtectedRoute>
+              } />
+              <Route path="/analytics" element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Analytics bugs={bugs} />
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </PageWrapper>
+        </main>
+      </div>
+    </Router>
+  );
+}
+
+export default App; 
