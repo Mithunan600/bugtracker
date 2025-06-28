@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Area, AreaChart
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Area, AreaChart
 } from 'recharts';
 import { FiTrendingUp, FiClock, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
 import './Analytics.css';
@@ -84,19 +84,6 @@ const Analytics = ({ bugs }) => {
       topAssignees
     };
   }, [bugs]);
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${label} : ${payload[0].value}`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="analytics-page">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FiArrowLeft, FiEdit, FiTrash2, FiMessageSquare, FiUser, FiClock, FiTag, FiAlertTriangle, FiCheckCircle, FiX, FiDownload, FiEye } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit, FiTrash2, FiUser, FiClock, FiTag, FiAlertTriangle, FiCheckCircle, FiX, FiDownload, FiEye } from 'react-icons/fi';
 import './BugDetail.css';
 import { bugAPI } from '../services/api';
 
@@ -24,7 +24,6 @@ const BugDetail = ({ bugs, onUpdateBug, onDeleteBug, currentUser }) => {
   const [dynamicRequests, setDynamicRequests] = useState([]);
   const [dynamicComments, setDynamicComments] = useState([]);
   const [showFileViewer, setShowFileViewer] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [approveLoadingIdx, setApproveLoadingIdx] = useState(null);
   const [toast, setToast] = useState(null);
   const [commentLoading, setCommentLoading] = useState(false);
@@ -680,7 +679,7 @@ const BugDetail = ({ bugs, onUpdateBug, onDeleteBug, currentUser }) => {
       )}
 
       {/* File Viewer Modal */}
-      {showFileViewer && selectedFile && (
+      {showFileViewer && (
         <div className="modal-overlay">
           <div className="modal file-viewer-modal">
             <div className="modal-header">

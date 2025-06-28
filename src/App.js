@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
@@ -59,22 +59,7 @@ function App() {
     }
   }, []);
 
-  // Fetch bugs when user is authenticated
-  useEffect(() => {
-    if (isAuthenticated && token) {
-      fetchBugs();
-    }
-  }, [isAuthenticated, token]);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
-  }, [darkMode]);
-
-  const fetchBugs = async () => {
+  const fetchBugs = useCallback(async () => {
     if (!token) return;
     
     setLoading(true);
@@ -94,7 +79,22 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  // Fetch bugs when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      fetchBugs();
+    }
+  }, [isAuthenticated, token, fetchBugs]);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   const handleRegister = (userData) => {
     console.log('User registered:', userData);
