@@ -247,10 +247,13 @@ export const getUserByEmail = async (email) => {
   const response = await fetch(`${API_BASE_URL}/users/${email}`);
   return handleResponse(response);
 };
-export const updateUserByEmail = async (email, data) => {
+export const updateUserByEmail = async (email, data, token) => {
   const response = await fetch(`${API_BASE_URL}/users/${email}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
     body: JSON.stringify(data),
   });
   return handleResponse(response);

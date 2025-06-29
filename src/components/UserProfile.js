@@ -4,7 +4,7 @@ import { FiEdit, FiSave, FiX, FiMail, FiUser, FiBriefcase, FiCheckCircle, FiCloc
 import { getUserByEmail, updateUserByEmail, getBugsWorkingOn, getBugsWorkedOn } from '../services/api';
 import './UserProfile.css';
 
-const UserProfile = ({ currentUser }) => {
+const UserProfile = ({ currentUser, token }) => {
   const { email } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -15,6 +15,7 @@ const UserProfile = ({ currentUser }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const isCurrentUser = currentUser?.email === email;
 
@@ -65,12 +66,47 @@ const UserProfile = ({ currentUser }) => {
   const handleChange = e => setEditForm(f => ({ ...f, [e.target.name]: e.target.value }));
   const handleSave = async () => {
     setSaving(true);
+    setError(null);
+    
+    // Validate form data
+    if (!editForm.name.trim()) {
+      setError('Name is required');
+      setSaving(false);
+      return;
+    }
+    
+    if (!editForm.role.trim()) {
+      setError('Role is required');
+      setSaving(false);
+      return;
+    }
+    
     try {
-      const res = await updateUserByEmail(email, editForm);
+      if (!token) {
+        throw new Error('Authentication token not available');
+      }
+      const res = await updateUserByEmail(email, editForm, token);
       setUser(res);
       setEditMode(false);
+      setSuccess('Profile updated successfully!');
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(null), 3000);
+      // Update the current user in localStorage and parent component if it's the current user
+      if (isCurrentUser) {
+        const updatedUser = { ...currentUser, ...editForm };
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        // Trigger a page reload to update the navbar and other components
+        window.location.reload();
+      }
     } catch (e) {
-      setError('Failed to update profile');
+      console.error('Error updating profile:', e);
+      if (e.message.includes('401') || e.message.includes('403')) {
+        setError('Authentication failed. Please log in again.');
+      } else if (e.message.includes('Failed to fetch')) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError('Failed to update profile. Please try again.');
+      }
     } finally {
       setSaving(false);
     }
@@ -81,16 +117,44 @@ const UserProfile = ({ currentUser }) => {
 
   return (
     <div className="user-profile-page">
+      {error && (
+        <div className="error-message" style={{ marginBottom: '1rem', padding: '0.75rem', backgroundColor: '#fee2e2', border: '1px solid #fecaca', borderRadius: '8px', color: '#dc2626' }}>
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="success-message" style={{ marginBottom: '1rem', padding: '0.75rem', backgroundColor: '#dcfce7', border: '1px solid #bbf7d0', borderRadius: '8px', color: '#16a34a' }}>
+          {success}
+        </div>
+      )}
       <div className="profile-header">
         <FiUser className="profile-icon" />
         <div className="profile-info">
           <h2>{editMode ? (
-            <input name="name" value={editForm.name || ''} onChange={handleChange} className="profile-input" />
+            <input 
+              name="name" 
+              value={editForm.name || ''} 
+              onChange={handleChange} 
+              className="profile-input" 
+              placeholder="Enter your name"
+              maxLength={50}
+            />
           ) : (user?.name || <span style={{color:'#aaa'}}>(No Name)</span>)}</h2>
           <div className="profile-email"><FiMail /> {user?.email || <span style={{color:'#aaa'}}>(No Email)</span>}</div>
           <div className="profile-role">
             {editMode ? (
-              <input name="role" value={editForm.role || ''} onChange={handleChange} className="profile-input" />
+              <select 
+                name="role" 
+                value={editForm.role || ''} 
+                onChange={handleChange} 
+                className="profile-input"
+              >
+                <option value="">Select a role</option>
+                <option value="Developer">Developer</option>
+                <option value="Team Lead">Team Lead</option>
+                <option value="Project Manager">Project Manager</option>
+                <option value="QA Tester">QA Tester</option>
+              </select>
             ) : (user?.role || <span style={{color:'#aaa'}}>(No Role)</span>)}
           </div>
         </div>

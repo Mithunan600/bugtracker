@@ -4,7 +4,7 @@
   box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 body.dark .navbar {
@@ -32,6 +32,21 @@ body.dark .brand-text {
   background-clip: initial !important;
 }
 
+body:not(.dark) .brand-text {
+  color:rgba(0, 0, 0, 0.663) !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  background-clip: initial !important;
+}
+body:not(.dark) .brand-icon {
+  color:rgba(0, 0, 0, 0.663) !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  background-clip: initial !important;
+}
+
 .navbar-brand {
   display: flex;
   align-items: center;
@@ -44,10 +59,15 @@ body.dark .brand-text {
 
 .brand-icon, .brand-text {
   color: #373737;
-  background: none;
+  background:black;
   -webkit-background-clip: initial;
   -webkit-text-fill-color: initial;
   background-clip: initial;
+  z-index: 1000;
+}
+
+.brand-text {
+  color: #000 !important;
 }
 
 .navbar-menu {
@@ -298,11 +318,40 @@ body.dark .brand-text {
   color: var(--primary-color);
 }
 
+@media (max-width: 900px) {
+  .navbar-container {
+    padding: 0 0.5rem;
+  }
+  .brand-text {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar-toggle {
     display: block;
+    margin-right: 0.5rem;
   }
-
+  .navbar-actions {
+    display: none !important;
+  }
+  .navbar-mobile-actions {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+  .navbar-mobile-actions .navbar-toggle {
+    display: block;
+    margin-right: 0.25rem;
+  }
+  .navbar-mobile-actions .navbar-mode-switch {
+    margin-left: 0;
+  }
+  .navbar-mobile-actions .navbar-user {
+    margin-left: 0.25rem;
+  }
   .navbar-menu {
     position: absolute;
     top: 100%;
@@ -317,45 +366,83 @@ body.dark .brand-text {
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease-in-out;
+    z-index: 1002;
   }
-
   .navbar-menu.active {
     transform: translateY(0);
     opacity: 1;
     visibility: visible;
   }
-
-  .navbar-link {
-    width: 100%;
-    justify-content: flex-start;
-    padding: 1rem;
-  }
-
-  .navbar-link.active::after {
-    display: none;
-  }
-
-  .user-info {
-    display: none;
-  }
-
-  .user-dropdown {
-    right: -1rem;
-    min-width: 260px;
-  }
 }
 
 @media (max-width: 480px) {
   .navbar-container {
-    padding: 0 0.75rem;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    height: auto;
   }
+  .navbar-actions {
+    gap: 0.25rem;
+  }
+  .navbar-mode-switch {
+    margin-left: 0;
+  }
+}
 
-  .brand-text {
-    display: none;
-  }
+body.dark .navbar {
+  background: #23272f !important;
+  border-bottom: 1.5px solid #353945 !important;
+}
+body.dark .user-dropdown {
+  background: #23272f !important;
+  border: 1.5px solid #353945 !important;
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.18) !important;
+}
+body.dark .user-dropdown-header {
+  background: #23272f !important;
+  border-bottom: 1.5px solid #353945 !important;
+}
+body.dark .user-avatar-large {
+  background: linear-gradient(135deg, #6366f1, #fbbf24) !important;
+  color: #fff !important;
+}
+body.dark .user-details {
+  color: #fff !important;
+}
+body.dark .user-name-large {
+  color: #fff !important;
+}
+body.dark .user-email {
+  color: #a5b4fc !important;
+}
+body.dark .user-role-large {
+  background: #18181b !important;
+  color: #a5b4fc !important;
+  border: 1px solid #353945 !important;
+}
+body.dark .user-dropdown-divider {
+  background: #353945 !important;
+}
+body.dark .user-dropdown-item {
+  color: #e5e7eb !important;
+  background: none !important;
+}
+body.dark .user-dropdown-item:hover {
+  background: #18181b !important;
+  color: #f87171 !important;
+}
 
-  .user-dropdown {
-    right: -0.5rem;
-    min-width: 240px;
-  }
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-mode-switch {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+
+.navbar-mobile-actions {
+  display: none;
 } 

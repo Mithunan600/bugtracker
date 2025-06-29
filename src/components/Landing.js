@@ -13,7 +13,7 @@ const Landing = () => {
             <span className="brand-text">BugTracker</span>
           </div>
           <div className="landing-actions">
-            <Link to="/login" className="btn btn-outline">
+            <Link to="/login" className="btn btn-primary">
               Sign In
             </Link>
             <Link to="/register" className="btn btn-primary">
@@ -38,7 +38,7 @@ const Landing = () => {
               Start Free Trial
               <FiArrowRight />
             </Link>
-            <Link to="/login" className="btn btn-outline btn-lg">
+            <Link to="/login" className="btn btn-primary btn-lg">
               Sign In
             </Link>
           </div>
@@ -137,7 +137,7 @@ const Landing = () => {
                 Get Started Free
                 <FiArrowRight />
               </Link>
-              <Link to="/login" className="btn btn-outline btn-lg">
+              <Link to="/login" className="btn btn-primary btn-lg">
                 Sign In
               </Link>
             </div>

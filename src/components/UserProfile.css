@@ -53,6 +53,18 @@
   border-radius: 8px;
   border: 1px solid #c2e9fb;
   margin-bottom: 0.2rem;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profile-input:focus {
+  outline: none;
+  border-color: #6c72e6;
+  box-shadow: 0 0 0 3px rgba(108, 114, 230, 0.1);
+}
+
+.profile-input::placeholder {
+  color: #9ca3af;
 }
 
 .profile-edit-actions {
@@ -144,6 +156,16 @@
   margin: 2rem 0;
 }
 
+.success-message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #16a34a;
+  font-weight: 500;
+}
+
 @media (max-width: 600px) {
   .user-profile-page {
     padding: 1rem 0.2rem;
@@ -185,6 +207,13 @@ body.dark .profile-input {
   color: #fff !important;
   border: 1px solid #444857 !important;
 }
+body.dark .profile-input:focus {
+  border-color: #a5b4fc !important;
+  box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.1) !important;
+}
+body.dark .profile-input::placeholder {
+  color: #6b7280 !important;
+}
 body.dark .profile-bugs-section h3 {
   color: #a5b4fc !important;
 }
@@ -213,4 +242,9 @@ body.dark .loading-spinner {
 }
 body.dark .error-message {
   color: #f87171 !important;
+}
+body.dark .success-message {
+  background-color: #064e3b !important;
+  border: 1px solid #065f46 !important;
+  color: #6ee7b7 !important;
 } 

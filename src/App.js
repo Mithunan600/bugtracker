@@ -157,7 +157,36 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {isAuthenticated && <Navbar currentUser={currentUser} onLogout={handleLogout} />}
+        {isAuthenticated && (
+          <Navbar 
+            currentUser={currentUser} 
+            onLogout={handleLogout} 
+            modeSwitchButton={
+              <button
+                onClick={() => setDarkMode((prev) => !prev)}
+                style={{
+                  background: darkMode ? '#23272f' : '#f3f4f6',
+                  color: darkMode ? '#fafafa' : '#23272f',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 40,
+                  height: 40,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                  cursor: 'pointer',
+                  transition: 'background 0.3s, color 0.3s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.25rem',
+                }}
+                aria-label="Toggle dark mode"
+                title="Toggle dark mode"
+              >
+                {darkMode ? '🌙' : '☀️'}
+              </button>
+            }
+          />
+        )}
         <main className={`main-content ${!isAuthenticated ? 'auth-main' : ''}`}>
           <PageWrapper isAuthenticated={isAuthenticated}>
             <Routes>
@@ -205,32 +234,10 @@ function App() {
                   <MyBugs bugs={bugs} currentUser={currentUser} onUpdateBug={updateBug} />
                 </ProtectedRoute>
               } />
-              <Route path="/users/:email" element={<UserProfile currentUser={currentUser} />} />
+              <Route path="/users/:email" element={<UserProfile currentUser={currentUser} token={token} />} />
             </Routes>
           </PageWrapper>
         </main>
-        <button
-          onClick={() => setDarkMode((prev) => !prev)}
-          style={{
-            position: 'fixed',
-            top: 16,
-            right: 16,
-            zIndex: 9999,
-            background: darkMode ? '#23272f' : '#f3f4f6',
-            color: darkMode ? '#fafafa' : '#23272f',
-            border: 'none',
-            borderRadius: '50%',
-            width: 40,
-            height: 40,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            cursor: 'pointer',
-            transition: 'background 0.3s, color 0.3s',
-          }}
-          aria-label="Toggle dark mode"
-          title="Toggle dark mode"
-        >
-          {darkMode ? '🌙' : '☀️'}
-        </button>
       </div>
     </Router>
   );
