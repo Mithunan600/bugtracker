@@ -49,25 +49,26 @@ const Navbar = ({ currentUser, onLogout, modeSwitchButton }) => {
           <div className="brand-icon">🐛</div>
           <span className="brand-text">BugTracker</span>
         </Link>
-        {/* Desktop actions: nav links, user, mode switch */}
+        {/* Move navbar-menu here so it is always present */}
+        <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}> 
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`navbar-link ${isActive ? 'active' : ''}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Icon className="navbar-icon" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+        {/* Desktop actions: user, mode switch */}
         <div className="navbar-actions">
-          <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}> 
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`navbar-link ${isActive ? 'active' : ''}`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Icon className="navbar-icon" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
           <div className="navbar-mode-switch">{modeSwitchButton}</div>
           <div className="navbar-user">
             <div className="user-menu">
