@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiEye, FiUser, FiClock, FiMessageSquare, FiCheck, FiX } from 'react-icons/fi';
+import { FiPlus, FiEye, FiUser, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import './MyBugs.css';
 import { bugAPI } from '../services/api';
 
@@ -50,11 +50,6 @@ const MyBugs = ({ bugs = [], currentUser, onUpdateBug, users = [] }) => {
         // You could show a toast notification here
       }
     }
-  };
-
-  const handleRequestWork = (bug) => {
-    setSelectedRequestBug(bug);
-    setShowRequestModal(true);
   };
 
   const handleSubmitRequest = async () => {
