@@ -39,6 +39,7 @@ public class SecurityConfig {
             .antMatchers("/api/auth/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/bugs/assigned").permitAll()
+            .antMatchers("/uploads/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
