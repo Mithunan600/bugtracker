@@ -4,7 +4,10 @@ import { FiArrowLeft, FiEdit, FiTrash2, FiUser, FiClock, FiTag, FiCheckCircle, F
 import './BugDetail.css';
 import { bugAPI } from '../services/api';
 
-const BACKEND_FILE_URL = 'http://localhost:8081/api/bugs/files/';
+// Use environment variable for backend URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8081';
+const STATIC_FILE_URL = `${API_BASE_URL}/uploads/`;
+const DOWNLOAD_FILE_URL = `${API_BASE_URL}/api/bugs/files/`;
 
 function Toast({ message, onClose }) {
   useEffect(() => {
@@ -233,25 +236,14 @@ const BugDetail = ({ bugs, onUpdateBug, onDeleteBug, currentUser }) => {
     }
   };
 
-  // Handle opening files securely with token
-  const handleOpenFile = async (filePath) => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await fetch(`${BACKEND_FILE_URL}${encodeURIComponent(filePath)}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        alert('Failed to open file');
-        return;
-      }
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
-    } catch (error) {
-      alert('Failed to open file');
+  // Handle opening files (images open directly, others download)
+  const handleOpenFile = (filePath) => {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+    const ext = filePath.split('.').pop().toLowerCase();
+    if (imageExtensions.includes(ext)) {
+      window.open(`${STATIC_FILE_URL}${encodeURIComponent(filePath)}`, '_blank');
+    } else {
+      handleDownloadFile(filePath);
     }
   };
 
@@ -259,7 +251,7 @@ const BugDetail = ({ bugs, onUpdateBug, onDeleteBug, currentUser }) => {
   const handleDownloadFile = async (filePath) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`${BACKEND_FILE_URL}${encodeURIComponent(filePath)}`, {
+      const response = await fetch(`${DOWNLOAD_FILE_URL}${encodeURIComponent(filePath)}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
